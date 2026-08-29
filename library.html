@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library | Quotes-R-Us</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="site-header">
+        <a class="brand-link" href="index.html" aria-label="Quotes-R-Us home">
+          <span class="logo-mark" aria-hidden="true">Q</span>
+          <span>Quotes-R-Us</span>
+        </a>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="submit.html">Submit</a>
+        </nav>
+      </header>
+
+      <section class="library-panel">
+        <div class="library-header">
+          <h1>Library</h1>
+          <input id="search-quotes" type="search" placeholder="Search quotes" aria-label="Search quotes">
+        </div>
+        <div id="quote-list" class="quote-list" role="list"></div>
+      </section>
+    </main>
+
+    <template id="quote-item-template">
+      <article class="quote-item" role="listitem">
+        <p></p>
+        <div class="item-footer">
+          <span class="item-source"></span>
+          <span class="item-tags"></span>
+        </div>
+        <div class="item-actions">
+          <button class="show-quote" type="button">Show</button>
+          <button class="delete-quote secondary" type="button">Delete</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

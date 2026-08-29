@@ -4,10 +4,9 @@ A lightweight static quote keeper for GitHub Pages.
 
 ## Features
 
-- Store quotes with an optional author/source and comma-separated tags.
-- Retrieve a random saved quote with the refresh button.
-- Search the local quote library.
-- Copy or delete the displayed quote.
+- Simple homepage with one quote and a refresh button.
+- Submit quotes with an optional author/source and comma-separated tags.
+- Browse, search, show, or delete submitted quotes on the library page.
 - Persist quotes in the browser with `localStorage`.
 
 ## Run locally

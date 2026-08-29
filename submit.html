@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Submit a Quote | Quotes-R-Us</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="site-header">
+        <a class="brand-link" href="index.html" aria-label="Quotes-R-Us home">
+          <span class="logo-mark" aria-hidden="true">Q</span>
+          <span>Quotes-R-Us</span>
+        </a>
+        <nav>
+          <a href="index.html">Home</a>
+          <a href="library.html">Library</a>
+        </nav>
+      </header>
+
+      <form id="quote-form" class="quote-form">
+        <h1>Submit a quote</h1>
+        <label for="quote-text">Quote</label>
+        <textarea id="quote-text" name="quote" rows="6" maxlength="500" required placeholder="The quote goes here"></textarea>
+
+        <div class="form-grid">
+          <div>
+            <label for="quote-source">Author or source</label>
+            <input id="quote-source" name="source" maxlength="80" placeholder="Optional">
+          </div>
+          <div>
+            <label for="quote-tags">Tags</label>
+            <input id="quote-tags" name="tags" maxlength="80" placeholder="work, life, funny">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit">Save quote</button>
+          <button id="load-samples" class="secondary" type="button">Add samples</button>
+        </div>
+        <p id="form-status" class="status-note" role="status" aria-live="polite"></p>
+      </form>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

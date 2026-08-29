@@ -1,20 +1,30 @@
 const STORAGE_KEY = 'quotes-r-us:v1';
+const ACTIVE_KEY = 'quotes-r-us:active';
 
-const sampleQuotes = [
+const starterQuotes = [
   {
+    id: 'starter-kent-beck',
     text: 'Make it work, make it right, make it fast.',
     source: 'Kent Beck',
-    tags: ['software', 'craft']
+    tags: ['software', 'craft'],
+    createdAt: '2026-01-01T00:00:00.000Z',
+    starter: true
   },
   {
+    id: 'starter-charles-eames',
     text: 'The details are not the details. They make the design.',
     source: 'Charles Eames',
-    tags: ['design']
+    tags: ['design'],
+    createdAt: '2026-01-01T00:00:01.000Z',
+    starter: true
   },
   {
+    id: 'starter-dijkstra',
     text: 'Simplicity is prerequisite for reliability.',
     source: 'Edsger W. Dijkstra',
-    tags: ['engineering']
+    tags: ['engineering'],
+    createdAt: '2026-01-01T00:00:02.000Z',
+    starter: true
   }
 ];
 
@@ -23,13 +33,12 @@ const els = {
   text: document.querySelector('#quote-text'),
   source: document.querySelector('#quote-source'),
   tags: document.querySelector('#quote-tags'),
+  status: document.querySelector('#form-status'),
   count: document.querySelector('#quote-count'),
   currentQuote: document.querySelector('#current-quote'),
   currentSource: document.querySelector('#current-source'),
   currentTags: document.querySelector('#current-tags'),
   refresh: document.querySelector('#refresh-quote'),
-  copy: document.querySelector('#copy-quote'),
-  delete: document.querySelector('#delete-quote'),
   samples: document.querySelector('#load-samples'),
   search: document.querySelector('#search-quotes'),
   list: document.querySelector('#quote-list'),
@@ -37,7 +46,7 @@ const els = {
 };
 
 let quotes = loadQuotes();
-let activeQuoteId = quotes[0]?.id ?? null;
+let activeQuoteId = localStorage.getItem(ACTIVE_KEY) || quotes[0]?.id || starterQuotes[0].id;
 
 function loadQuotes() {
   try {
@@ -50,6 +59,10 @@ function loadQuotes() {
 
 function saveQuotes() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(quotes));
+}
+
+function allDisplayQuotes() {
+  return [...quotes, ...starterQuotes];
 }
 
 function normalizeTags(value) {
@@ -72,38 +85,41 @@ function createQuote({ text, source, tags }) {
   };
 }
 
-function findActiveQuote() {
-  return quotes.find((quote) => quote.id === activeQuoteId) ?? quotes[0] ?? null;
+function setActiveQuote(id) {
+  activeQuoteId = id;
+  localStorage.setItem(ACTIVE_KEY, id);
 }
 
-function showQuote(id) {
-  activeQuoteId = id;
-  render();
+function findActiveQuote() {
+  const pool = allDisplayQuotes();
+  return pool.find((quote) => quote.id === activeQuoteId) || pool[0] || null;
 }
 
 function randomQuote() {
-  if (!quotes.length) return;
-  if (quotes.length === 1) {
-    activeQuoteId = quotes[0].id;
-    render();
+  const pool = allDisplayQuotes();
+  if (!pool.length) return;
+
+  if (pool.length === 1) {
+    setActiveQuote(pool[0].id);
+    renderHome();
     return;
   }
 
-  const candidates = quotes.filter((quote) => quote.id !== activeQuoteId);
+  const candidates = pool.filter((quote) => quote.id !== activeQuoteId);
   const next = candidates[Math.floor(Math.random() * candidates.length)];
-  activeQuoteId = next.id;
-  render();
+  setActiveQuote(next.id);
+  renderHome();
 }
 
-function renderFeatured() {
+function renderHome() {
+  if (!els.currentQuote) return;
+
   const quote = findActiveQuote();
   els.count.textContent = `${quotes.length} saved`;
-  els.delete.disabled = !quote;
-  els.copy.disabled = !quote;
-  els.refresh.disabled = !quotes.length;
+  els.refresh.disabled = !quote;
 
   if (!quote) {
-    els.currentQuote.textContent = 'Add your first quote to start the collection.';
+    els.currentQuote.textContent = 'Submit your first quote to start the collection.';
     els.currentSource.textContent = 'Quotes-R-Us';
     els.currentTags.textContent = '';
     return;
@@ -119,7 +135,9 @@ function quoteMatchesSearch(quote, term) {
   return haystack.includes(term);
 }
 
-function renderList() {
+function renderLibrary() {
+  if (!els.list) return;
+
   const term = els.search.value.trim().toLowerCase();
   const shown = quotes.filter((quote) => quoteMatchesSearch(quote, term));
   els.list.textContent = '';
@@ -127,7 +145,7 @@ function renderList() {
   if (!shown.length) {
     const empty = document.createElement('div');
     empty.className = 'empty';
-    empty.textContent = quotes.length ? 'No quotes match that search.' : 'Your quote library is empty.';
+    empty.textContent = quotes.length ? 'No quotes match that search.' : 'No submitted quotes yet.';
     els.list.append(empty);
     return;
   }
@@ -139,65 +157,69 @@ function renderList() {
       const item = els.template.content.firstElementChild.cloneNode(true);
       item.querySelector('p').textContent = quote.text;
       item.querySelector('.item-source').textContent = quote.source;
-      item.querySelector('button').addEventListener('click', () => showQuote(quote.id));
-      if (quote.id === activeQuoteId) {
-        item.classList.add('active');
-      }
+      item.querySelector('.item-tags').textContent = quote.tags.length ? quote.tags.map((tag) => `#${tag}`).join(' ') : '';
+      item.querySelector('.show-quote').addEventListener('click', () => {
+        setActiveQuote(quote.id);
+        window.location.href = 'index.html';
+      });
+      item.querySelector('.delete-quote').addEventListener('click', () => {
+        quotes = quotes.filter((itemQuote) => itemQuote.id !== quote.id);
+        if (activeQuoteId === quote.id) {
+          setActiveQuote(quotes[0]?.id || starterQuotes[0].id);
+        }
+        saveQuotes();
+        renderLibrary();
+      });
       els.list.append(item);
     });
 }
 
-function render() {
-  renderFeatured();
-  renderList();
+function showStatus(message) {
+  if (!els.status) return;
+  els.status.textContent = message;
 }
 
-els.form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const quote = createQuote({
-    text: els.text.value,
-    source: els.source.value,
-    tags: normalizeTags(els.tags.value)
+if (els.form) {
+  els.form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const quote = createQuote({
+      text: els.text.value,
+      source: els.source.value,
+      tags: normalizeTags(els.tags.value)
+    });
+
+    quotes = [quote, ...quotes];
+    setActiveQuote(quote.id);
+    saveQuotes();
+    els.form.reset();
+    els.text.focus();
+    showStatus('Saved. It will appear on the homepage refresh and in the library.');
   });
+}
 
-  quotes = [quote, ...quotes];
-  activeQuoteId = quote.id;
-  saveQuotes();
-  els.form.reset();
-  els.text.focus();
-  render();
-});
+if (els.refresh) {
+  els.refresh.addEventListener('click', randomQuote);
+}
 
-els.refresh.addEventListener('click', randomQuote);
+if (els.samples) {
+  els.samples.addEventListener('click', () => {
+    const existing = new Set(quotes.map((quote) => `${quote.text}|${quote.source}`));
+    const additions = starterQuotes
+      .filter((quote) => !existing.has(`${quote.text}|${quote.source}`))
+      .map(({ text, source, tags }) => createQuote({ text, source, tags }));
 
-els.copy.addEventListener('click', async () => {
-  const quote = findActiveQuote();
-  if (!quote) return;
-  const tags = quote.tags.length ? ` ${quote.tags.map((tag) => `#${tag}`).join(' ')}` : '';
-  await navigator.clipboard.writeText(`"${quote.text}" - ${quote.source}${tags}`);
-  els.copy.textContent = 'Copied';
-  setTimeout(() => {
-    els.copy.textContent = 'Copy';
-  }, 1200);
-});
+    quotes = [...additions, ...quotes];
+    if (additions[0]) {
+      setActiveQuote(additions[0].id);
+    }
+    saveQuotes();
+    showStatus(additions.length ? 'Sample quotes added.' : 'Those samples are already in your library.');
+  });
+}
 
-els.delete.addEventListener('click', () => {
-  const quote = findActiveQuote();
-  if (!quote) return;
-  quotes = quotes.filter((item) => item.id !== quote.id);
-  activeQuoteId = quotes[0]?.id ?? null;
-  saveQuotes();
-  render();
-});
+if (els.search) {
+  els.search.addEventListener('input', renderLibrary);
+}
 
-els.samples.addEventListener('click', () => {
-  const additions = sampleQuotes.map(createQuote);
-  quotes = [...additions, ...quotes];
-  activeQuoteId = additions[0].id;
-  saveQuotes();
-  render();
-});
-
-els.search.addEventListener('input', renderList);
-
-render();
+renderHome();
+renderLibrary();
