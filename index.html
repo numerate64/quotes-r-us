@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quotes-R-Us</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="quote-stage" aria-labelledby="site-title">
+        <div class="brand-row">
+          <div class="logo-mark" aria-hidden="true">Q</div>
+          <div>
+            <h1 id="site-title">Quotes-R-Us</h1>
+            <p>Save the lines worth keeping. Pull up a fresh one whenever you need it.</p>
+          </div>
+        </div>
+
+        <article class="featured-quote" aria-live="polite">
+          <div class="quote-tools">
+            <span id="quote-count">0 saved</span>
+            <button class="icon-button" id="refresh-quote" type="button" aria-label="Refresh quote" title="Refresh quote">
+              ↻
+            </button>
+          </div>
+          <blockquote id="current-quote">Add your first quote to start the collection.</blockquote>
+          <div class="quote-meta">
+            <span id="current-source">Quotes-R-Us</span>
+            <span id="current-tags"></span>
+          </div>
+          <div class="actions">
+            <button id="copy-quote" type="button">Copy</button>
+            <button id="delete-quote" type="button">Delete shown quote</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="workspace" aria-label="Quote workspace">
+        <form id="quote-form" class="quote-form">
+          <h2>Store a quote</h2>
+          <label for="quote-text">Quote</label>
+          <textarea id="quote-text" name="quote" rows="5" maxlength="500" required placeholder="The quote goes here"></textarea>
+
+          <div class="form-grid">
+            <div>
+              <label for="quote-source">Author or source</label>
+              <input id="quote-source" name="source" maxlength="80" placeholder="Optional">
+            </div>
+            <div>
+              <label for="quote-tags">Tags</label>
+              <input id="quote-tags" name="tags" maxlength="80" placeholder="work, life, funny">
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit">Save quote</button>
+            <button id="load-samples" class="secondary" type="button">Add samples</button>
+          </div>
+        </form>
+
+        <aside class="library-panel">
+          <div class="library-header">
+            <h2>Library</h2>
+            <input id="search-quotes" type="search" placeholder="Search quotes" aria-label="Search quotes">
+          </div>
+          <div id="quote-list" class="quote-list" role="list"></div>
+        </aside>
+      </section>
+    </main>
+
+    <template id="quote-item-template">
+      <article class="quote-item" role="listitem">
+        <p></p>
+        <div>
+          <span class="item-source"></span>
+          <button type="button">Show</button>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>
