@@ -7,24 +7,21 @@ const starterQuotes = [
     text: 'Make it work, make it right, make it fast.',
     source: 'Kent Beck',
     tags: ['software', 'craft'],
-    createdAt: '2026-01-01T00:00:00.000Z',
-    starter: true
+    createdAt: '2026-01-01T00:00:00.000Z'
   },
   {
     id: 'starter-charles-eames',
     text: 'The details are not the details. They make the design.',
     source: 'Charles Eames',
     tags: ['design'],
-    createdAt: '2026-01-01T00:00:01.000Z',
-    starter: true
+    createdAt: '2026-01-01T00:00:01.000Z'
   },
   {
     id: 'starter-dijkstra',
     text: 'Simplicity is prerequisite for reliability.',
     source: 'Edsger W. Dijkstra',
     tags: ['engineering'],
-    createdAt: '2026-01-01T00:00:02.000Z',
-    starter: true
+    createdAt: '2026-01-01T00:00:02.000Z'
   }
 ];
 
@@ -45,10 +42,28 @@ const els = {
   template: document.querySelector('#quote-item-template')
 };
 
-let quotes = loadQuotes();
-let activeQuoteId = localStorage.getItem(ACTIVE_KEY) || quotes[0]?.id || starterQuotes[0].id;
+let quotes = [];
+let usingApi = false;
+let activeQuoteId = localStorage.getItem(ACTIVE_KEY) || starterQuotes[0].id;
 
-function loadQuotes() {
+function apiUrl(path) {
+  return `${window.QUOTES_API_BASE || ''}${path}`;
+}
+
+async function loadQuotes() {
+  try {
+    const response = await fetch(apiUrl('/api/quotes'), { headers: { Accept: 'application/json' } });
+    if (!response.ok) throw new Error('API unavailable');
+    const body = await response.json();
+    usingApi = true;
+    return Array.isArray(body.quotes) ? body.quotes : [];
+  } catch {
+    usingApi = false;
+    return loadLocalQuotes();
+  }
+}
+
+function loadLocalQuotes() {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
     return Array.isArray(parsed) ? parsed : [];
@@ -57,12 +72,12 @@ function loadQuotes() {
   }
 }
 
-function saveQuotes() {
+function saveLocalQuotes() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(quotes));
 }
 
 function allDisplayQuotes() {
-  return [...quotes, ...starterQuotes];
+  return quotes.length ? quotes : starterQuotes;
 }
 
 function normalizeTags(value) {
@@ -75,7 +90,7 @@ function normalizeTags(value) {
   )];
 }
 
-function createQuote({ text, source, tags }) {
+function createLocalQuote({ text, source, tags }) {
   return {
     id: crypto.randomUUID(),
     text: text.trim(),
@@ -95,7 +110,26 @@ function findActiveQuote() {
   return pool.find((quote) => quote.id === activeQuoteId) || pool[0] || null;
 }
 
-function randomQuote() {
+async function randomQuote() {
+  if (usingApi) {
+    try {
+      const response = await fetch(apiUrl('/api/quotes/random'), { headers: { Accept: 'application/json' } });
+      if (response.ok) {
+        const body = await response.json();
+        if (body.quote) {
+          setActiveQuote(body.quote.id);
+          if (!quotes.some((quote) => quote.id === body.quote.id)) {
+            quotes = [body.quote, ...quotes];
+          }
+          renderHome();
+          return;
+        }
+      }
+    } catch {
+      usingApi = false;
+    }
+  }
+
   const pool = allDisplayQuotes();
   if (!pool.length) return;
 
@@ -115,7 +149,7 @@ function renderHome() {
   if (!els.currentQuote) return;
 
   const quote = findActiveQuote();
-  els.count.textContent = `${quotes.length} saved`;
+  els.count.textContent = usingApi ? `${quotes.length} shared` : `${quotes.length} saved`;
   els.refresh.disabled = !quote;
 
   if (!quote) {
@@ -162,14 +196,6 @@ function renderLibrary() {
         setActiveQuote(quote.id);
         window.location.href = 'index.html';
       });
-      item.querySelector('.delete-quote').addEventListener('click', () => {
-        quotes = quotes.filter((itemQuote) => itemQuote.id !== quote.id);
-        if (activeQuoteId === quote.id) {
-          setActiveQuote(quotes[0]?.id || starterQuotes[0].id);
-        }
-        saveQuotes();
-        renderLibrary();
-      });
       els.list.append(item);
     });
 }
@@ -179,21 +205,48 @@ function showStatus(message) {
   els.status.textContent = message;
 }
 
+async function submitQuote(input) {
+  if (usingApi) {
+    const response = await fetch(apiUrl('/api/quotes'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify(input)
+    });
+
+    const body = await response.json();
+    if (!response.ok) {
+      throw new Error(body.error || 'Quote could not be saved.');
+    }
+    return body.quote;
+  }
+
+  const quote = createLocalQuote(input);
+  quotes = [quote, ...quotes];
+  saveLocalQuotes();
+  return quote;
+}
+
 if (els.form) {
-  els.form.addEventListener('submit', (event) => {
+  els.form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const quote = createQuote({
+    const input = {
       text: els.text.value,
       source: els.source.value,
       tags: normalizeTags(els.tags.value)
-    });
+    };
 
-    quotes = [quote, ...quotes];
-    setActiveQuote(quote.id);
-    saveQuotes();
-    els.form.reset();
-    els.text.focus();
-    showStatus('Saved. It will appear on the homepage refresh and in the library.');
+    try {
+      const quote = await submitQuote(input);
+      if (usingApi && !quotes.some((item) => item.id === quote.id)) {
+        quotes = [quote, ...quotes];
+      }
+      setActiveQuote(quote.id);
+      els.form.reset();
+      els.text.focus();
+      showStatus(usingApi ? 'Saved to the shared quote database.' : 'Saved in this browser.');
+    } catch (error) {
+      showStatus(error.message);
+    }
   });
 }
 
@@ -202,18 +255,19 @@ if (els.refresh) {
 }
 
 if (els.samples) {
-  els.samples.addEventListener('click', () => {
-    const existing = new Set(quotes.map((quote) => `${quote.text}|${quote.source}`));
-    const additions = starterQuotes
-      .filter((quote) => !existing.has(`${quote.text}|${quote.source}`))
-      .map(({ text, source, tags }) => createQuote({ text, source, tags }));
-
-    quotes = [...additions, ...quotes];
-    if (additions[0]) {
-      setActiveQuote(additions[0].id);
+  els.samples.addEventListener('click', async () => {
+    try {
+      let lastQuote = null;
+      for (const quote of starterQuotes) {
+        lastQuote = await submitQuote({ text: quote.text, source: quote.source, tags: quote.tags });
+      }
+      if (lastQuote) {
+        setActiveQuote(lastQuote.id);
+      }
+      showStatus(usingApi ? 'Sample quotes added to the shared database.' : 'Sample quotes added in this browser.');
+    } catch (error) {
+      showStatus(error.message);
     }
-    saveQuotes();
-    showStatus(additions.length ? 'Sample quotes added.' : 'Those samples are already in your library.');
   });
 }
 
@@ -221,5 +275,10 @@ if (els.search) {
   els.search.addEventListener('input', renderLibrary);
 }
 
-renderHome();
-renderLibrary();
+async function init() {
+  quotes = await loadQuotes();
+  renderHome();
+  renderLibrary();
+}
+
+init();
