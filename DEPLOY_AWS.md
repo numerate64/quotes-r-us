@@ -318,29 +318,24 @@ aws dynamodb scan \
 
 ## Cleanup
 
-Delete the CloudFormation stack:
+Use the cleanup script:
 
 ```bash
-aws cloudformation delete-stack \
-  --region "$AWS_REGION" \
-  --stack-name "$STACK_NAME"
+./scripts/destroy-fargate.sh
 ```
 
-Wait for deletion:
+It deletes the CloudFormation stack, waits for deletion to complete, then deletes the ECR repository and its images. The script asks you to type the stack name before deleting anything.
+
+For non-interactive cleanup:
 
 ```bash
-aws cloudformation wait stack-delete-complete \
-  --region "$AWS_REGION" \
-  --stack-name "$STACK_NAME"
+FORCE=true ./scripts/destroy-fargate.sh
 ```
 
-The ECR repository is created by the script outside of CloudFormation, so delete it separately if you no longer need it:
+To keep the ECR repository and only delete the deployed AWS resources:
 
 ```bash
-aws ecr delete-repository \
-  --region "$AWS_REGION" \
-  --repository-name "$APP_NAME" \
-  --force
+SKIP_ECR_DELETE=true ./scripts/destroy-fargate.sh
 ```
 
 ## Production Notes

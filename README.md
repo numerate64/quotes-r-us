@@ -70,6 +70,12 @@ export PUBLIC_SUBNET_IDS=subnet-aaaaaaaa,subnet-bbbbbbbb
 
 The script creates an ECR repo if needed, pushes the image, deploys the stack, and prints the load balancer URL.
 
+To delete the AWS test environment later:
+
+```bash
+./scripts/destroy-fargate.sh
+```
+
 ## Runtime Configuration
 
 | Name | Purpose |
