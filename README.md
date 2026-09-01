@@ -76,6 +76,27 @@ To delete the AWS test environment later:
 ./scripts/destroy-fargate.sh
 ```
 
+## Cost Estimate
+
+AWS pricing changes by Region and over time, so treat this as a planning estimate rather than a bill guarantee. These numbers assume `us-east-1`, one always-on Fargate task, the default template values of `0.25 vCPU` and `512 MB` memory, low traffic, and no NAT Gateway.
+
+| Resource | Estimate | Notes |
+| --- | ---: | --- |
+| ECS Fargate task | ~$9/month | One Linux/x86 task running 24/7 at `0.25 vCPU` and `512 MB`. |
+| Application Load Balancer | ~$16-$23/month | Includes the hourly ALB charge; LCU usage depends on traffic. |
+| DynamoDB on-demand | Usually $0-$1/month for testing | Quote reads/writes are tiny unless traffic grows. |
+| CloudWatch Logs | Usually $0-$1/month for testing | Log retention is set to 14 days. |
+| ECR image storage | Usually pennies | Depends on image count and size. |
+
+Expected test deployment total: roughly **$25-$35/month** if left running all day, or about **$0.04-$0.05/hour**. The load balancer is the biggest fixed cost. Run `./scripts/destroy-fargate.sh` after testing to stop ongoing charges.
+
+For current pricing, check:
+
+- AWS Fargate pricing: https://aws.amazon.com/fargate/pricing/
+- Elastic Load Balancing pricing: https://aws.amazon.com/elasticloadbalancing/pricing/
+- DynamoDB pricing: https://aws.amazon.com/dynamodb/pricing/
+- CloudWatch pricing: https://aws.amazon.com/cloudwatch/pricing/
+
 ## Runtime Configuration
 
 | Name | Purpose |
