@@ -36,7 +36,6 @@ const els = {
   currentSource: document.querySelector('#current-source'),
   currentTags: document.querySelector('#current-tags'),
   refresh: document.querySelector('#refresh-quote'),
-  samples: document.querySelector('#load-samples'),
   search: document.querySelector('#search-quotes'),
   list: document.querySelector('#quote-list'),
   template: document.querySelector('#quote-item-template')
@@ -252,23 +251,6 @@ if (els.form) {
 
 if (els.refresh) {
   els.refresh.addEventListener('click', randomQuote);
-}
-
-if (els.samples) {
-  els.samples.addEventListener('click', async () => {
-    try {
-      let lastQuote = null;
-      for (const quote of starterQuotes) {
-        lastQuote = await submitQuote({ text: quote.text, source: quote.source, tags: quote.tags });
-      }
-      if (lastQuote) {
-        setActiveQuote(lastQuote.id);
-      }
-      showStatus(usingApi ? 'Sample quotes added to the shared database.' : 'Sample quotes added in this browser.');
-    } catch (error) {
-      showStatus(error.message);
-    }
-  });
 }
 
 if (els.search) {

@@ -61,15 +61,6 @@ button:hover,
   width: fit-content;
 }
 
-.secondary {
-  background: #eef1f5;
-  color: var(--ink);
-}
-
-.secondary:hover {
-  background: #dfe4eb;
-}
-
 .home-shell,
 .page-shell {
   width: min(980px, calc(100% - 32px));

@@ -50,6 +50,8 @@ The repo includes:
 - `deploy/cloudformation.yml` for ECS Fargate, an Application Load Balancer, CloudWatch Logs, task roles, and DynamoDB.
 - `scripts/deploy-fargate.sh` to build, push to ECR, and deploy the CloudFormation stack.
 
+Detailed deployment instructions are in [`DEPLOY_AWS.md`](DEPLOY_AWS.md).
+
 Required local tools:
 
 - AWS CLI authenticated to the target AWS account.
