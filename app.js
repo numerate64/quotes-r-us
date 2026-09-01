@@ -42,25 +42,7 @@ const els = {
 };
 
 let quotes = [];
-let usingApi = false;
 let activeQuoteId = localStorage.getItem(ACTIVE_KEY) || starterQuotes[0].id;
-
-function apiUrl(path) {
-  return `${window.QUOTES_API_BASE || ''}${path}`;
-}
-
-async function loadQuotes() {
-  try {
-    const response = await fetch(apiUrl('/api/quotes'), { headers: { Accept: 'application/json' } });
-    if (!response.ok) throw new Error('API unavailable');
-    const body = await response.json();
-    usingApi = true;
-    return Array.isArray(body.quotes) ? body.quotes : [];
-  } catch {
-    usingApi = false;
-    return loadLocalQuotes();
-  }
-}
 
 function loadLocalQuotes() {
   try {
@@ -109,26 +91,7 @@ function findActiveQuote() {
   return pool.find((quote) => quote.id === activeQuoteId) || pool[0] || null;
 }
 
-async function randomQuote() {
-  if (usingApi) {
-    try {
-      const response = await fetch(apiUrl('/api/quotes/random'), { headers: { Accept: 'application/json' } });
-      if (response.ok) {
-        const body = await response.json();
-        if (body.quote) {
-          setActiveQuote(body.quote.id);
-          if (!quotes.some((quote) => quote.id === body.quote.id)) {
-            quotes = [body.quote, ...quotes];
-          }
-          renderHome();
-          return;
-        }
-      }
-    } catch {
-      usingApi = false;
-    }
-  }
-
+function randomQuote() {
   const pool = allDisplayQuotes();
   if (!pool.length) return;
 
@@ -148,7 +111,7 @@ function renderHome() {
   if (!els.currentQuote) return;
 
   const quote = findActiveQuote();
-  els.count.textContent = usingApi ? `${quotes.length} shared` : `${quotes.length} saved`;
+  els.count.textContent = `${quotes.length} saved`;
   els.refresh.disabled = !quote;
 
   if (!quote) {
@@ -204,21 +167,7 @@ function showStatus(message) {
   els.status.textContent = message;
 }
 
-async function submitQuote(input) {
-  if (usingApi) {
-    const response = await fetch(apiUrl('/api/quotes'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(input)
-    });
-
-    const body = await response.json();
-    if (!response.ok) {
-      throw new Error(body.error || 'Quote could not be saved.');
-    }
-    return body.quote;
-  }
-
+function submitQuote(input) {
   const quote = createLocalQuote(input);
   quotes = [quote, ...quotes];
   saveLocalQuotes();
@@ -226,7 +175,7 @@ async function submitQuote(input) {
 }
 
 if (els.form) {
-  els.form.addEventListener('submit', async (event) => {
+  els.form.addEventListener('submit', (event) => {
     event.preventDefault();
     const input = {
       text: els.text.value,
@@ -235,14 +184,11 @@ if (els.form) {
     };
 
     try {
-      const quote = await submitQuote(input);
-      if (usingApi && !quotes.some((item) => item.id === quote.id)) {
-        quotes = [quote, ...quotes];
-      }
+      const quote = submitQuote(input);
       setActiveQuote(quote.id);
       els.form.reset();
       els.text.focus();
-      showStatus(usingApi ? 'Saved to the shared quote database.' : 'Saved in this browser.');
+      showStatus('Saved in this browser.');
     } catch (error) {
       showStatus(error.message);
     }
@@ -257,8 +203,8 @@ if (els.search) {
   els.search.addEventListener('input', renderLibrary);
 }
 
-async function init() {
-  quotes = await loadQuotes();
+function init() {
+  quotes = loadLocalQuotes();
   renderHome();
   renderLibrary();
 }

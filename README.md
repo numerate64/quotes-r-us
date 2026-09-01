@@ -1,20 +1,30 @@
 # Quotes-R-Us
 
-A container-ready shared quote app for ECS Fargate and DynamoDB.
+A browser-stored quote app hosted on GitHub Pages, with optional ECS Fargate and DynamoDB deployment files kept for server-backed experiments.
 
 ## Features
 
 - Simple homepage with one quote and a refresh button.
 - Submit quotes with an optional author/source and comma-separated tags.
 - Browse, search, and show submitted quotes on the library page.
-- Store shared quotes through an Express API backed by DynamoDB.
-- Fall back to browser `localStorage` when the API is unavailable.
+- Store quotes in each visitor's browser with `localStorage`.
+
+## GitHub Pages
+
+The live browser-only site is hosted at:
+
+```text
+https://numerate64.github.io/quotes-r-us/
+```
+
+Quotes saved there are private to that browser/device. They are not shared across visitors and are not written to GitHub.
 
 ## Run locally
 
+For the browser-only version, serve the files with any static web server:
+
 ```bash
-npm install
-npm run dev
+python3 -m http.server 3000
 ```
 
 Then visit:
@@ -23,9 +33,14 @@ Then visit:
 http://localhost:3000
 ```
 
-Local development uses `QUOTE_STORE=local`, which writes to `data/quotes.local.json`.
+You can also run the optional Express server:
 
-## API
+```bash
+npm install
+npm run dev
+```
+
+## Optional API
 
 ```text
 GET  /health
@@ -102,5 +117,5 @@ For current pricing, check:
 | Name | Purpose |
 | --- | --- |
 | `PORT` | Container port, default `3000`. |
-| `DYNAMODB_TABLE` | Enables shared DynamoDB quote storage. |
-| `QUOTE_STORE=local` | Forces local file storage for development. |
+| `DYNAMODB_TABLE` | Enables DynamoDB storage for the optional API. |
+| `QUOTE_STORE=local` | Forces file storage for the optional API. |
