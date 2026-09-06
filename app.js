@@ -1,7 +1,7 @@
 const STORAGE_KEY = 'quotes-r-us:v1';
 const ACTIVE_KEY = 'quotes-r-us:active';
 
-const starterQuotes = [
+let starterQuotes = [
   {
     id: 'starter-kent-beck',
     text: 'Make it work, make it right, make it fast.',
@@ -58,7 +58,7 @@ function saveLocalQuotes() {
 }
 
 function allDisplayQuotes() {
-  return quotes.length ? quotes : starterQuotes;
+  return [...quotes, ...starterQuotes];
 }
 
 function normalizeTags(value) {
@@ -101,7 +101,8 @@ function randomQuote() {
     return;
   }
 
-  const candidates = pool.filter((quote) => quote.id !== activeQuoteId);
+  const currentId = findActiveQuote()?.id;
+  const candidates = pool.filter((quote) => quote.id !== currentId);
   const next = candidates[Math.floor(Math.random() * candidates.length)];
   setActiveQuote(next.id);
   renderHome();
@@ -111,7 +112,7 @@ function renderHome() {
   if (!els.currentQuote) return;
 
   const quote = findActiveQuote();
-  els.count.textContent = `${quotes.length} saved`;
+  els.count.textContent = `${starterQuotes.length.toLocaleString()} samples · ${quotes.length} saved`;
   els.refresh.disabled = !quote;
 
   if (!quote) {
@@ -203,10 +204,27 @@ if (els.search) {
   els.search.addEventListener('input', renderLibrary);
 }
 
-function init() {
+async function init() {
   quotes = loadLocalQuotes();
   renderHome();
   renderLibrary();
+
+  if (els.currentQuote) {
+    try {
+      const response = await fetch('sample-quotes.json');
+      if (!response.ok) throw new Error('Sample quotes unavailable');
+      const samples = await response.json();
+      if (!Array.isArray(samples) || !samples.length || samples.some((quote) =>
+        !quote || typeof quote.id !== 'string' || typeof quote.text !== 'string' ||
+        typeof quote.source !== 'string' || !Array.isArray(quote.tags))) {
+        throw new Error('Invalid sample collection');
+      }
+      starterQuotes = samples;
+      renderHome();
+    } catch {
+      // Keep the small built-in fallback and personal quotes usable.
+    }
+  }
 }
 
 init();

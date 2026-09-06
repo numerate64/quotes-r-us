@@ -5,6 +5,8 @@ A browser-stored quote app hosted on GitHub Pages, with optional ECS Fargate and
 ## Features
 
 - Simple homepage with one quote and a refresh button.
+- 1,000 bundled sample quotes, mixed with your saved quotes on refresh.
+- Samples stay out of your personal library and browser storage; [source and license](SAMPLE_QUOTES.md).
 - Submit quotes with an optional author/source and comma-separated tags.
 - Browse, search, and show submitted quotes on the library page.
 - Store quotes in each visitor's browser with `localStorage`.
