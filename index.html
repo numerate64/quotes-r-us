@@ -4,37 +4,41 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Quotes-R-Us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="home-shell">
       <header class="site-header" aria-labelledby="site-title">
         <a class="brand-link" href="index.html" aria-label="Quotes-R-Us home">
-          <span class="logo-mark" aria-hidden="true">Q</span>
+          <span class="logo-mark" aria-hidden="true">“</span>
           <span id="site-title">Quotes-R-Us</span>
         </a>
-        <nav>
+        <nav aria-label="Main navigation">
           <a href="library.html">Library</a>
         </nav>
       </header>
 
       <section class="single-quote-view" aria-label="Random quote">
+        <div class="home-intro"><p class="eyebrow">A little perspective</p><h1>Words worth keeping.</h1></div>
         <article class="featured-quote" aria-live="polite">
           <div class="quote-tools">
             <span id="quote-count">0 saved</span>
-            <button class="icon-button" id="refresh-quote" type="button" aria-label="Refresh quote" title="Refresh quote">
-              ↻
-            </button>
+<span class="quote-symbol" aria-hidden="true">“</span>
           </div>
           <blockquote id="current-quote">Loading a quote...</blockquote>
           <div class="quote-meta">
             <span id="current-source">Quotes-R-Us</span>
             <span id="current-tags"></span>
           </div>
+          <div class="refresh-row"><button id="refresh-quote" type="button"><span aria-hidden="true">↻</span> Refresh quote</button></div>
         </article>
 
-        <a class="primary-link" href="submit.html">Submit a quote</a>
+        <a class="primary-link" href="submit.html"><span aria-hidden="true">＋</span> Submit a quote</a>
       </section>
+      <footer class="site-footer">Good words. Yours to keep. <span>Saved in this browser.</span></footer>
     </main>
 
     <script src="app.js"></script>

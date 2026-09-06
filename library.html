@@ -4,16 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Library | Quotes-R-Us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <main class="page-shell">
       <header class="site-header">
         <a class="brand-link" href="index.html" aria-label="Quotes-R-Us home">
-          <span class="logo-mark" aria-hidden="true">Q</span>
+          <span class="logo-mark" aria-hidden="true">“</span>
           <span>Quotes-R-Us</span>
         </a>
-        <nav>
+        <nav aria-label="Main navigation">
           <a href="index.html">Home</a>
           <a href="submit.html">Submit</a>
         </nav>
@@ -21,11 +24,12 @@
 
       <section class="library-panel">
         <div class="library-header">
-          <h1>Library</h1>
+          <div><p class="eyebrow">Your collection</p><h1>Library</h1></div>
           <input id="search-quotes" type="search" placeholder="Search quotes" aria-label="Search quotes">
         </div>
         <div id="quote-list" class="quote-list" role="list"></div>
       </section>
+      <footer class="site-footer">Good words. Yours to keep. <span>Saved in this browser.</span></footer>
     </main>
 
     <template id="quote-item-template">
