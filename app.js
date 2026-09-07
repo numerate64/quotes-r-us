@@ -3,25 +3,34 @@ const ACTIVE_KEY = 'quotes-r-us:active';
 
 let starterQuotes = [
   {
-    id: 'starter-kent-beck',
-    text: 'Make it work, make it right, make it fast.',
-    source: 'Kent Beck',
-    tags: ['software', 'craft'],
-    createdAt: '2026-01-01T00:00:00.000Z'
+    "id": "starter-humor-meeting",
+    "text": "My calendar has trust issues. Every free hour looks like a meeting it has not scheduled yet.",
+    "source": "Anonymous",
+    "tags": [
+      "humor",
+      "work"
+    ],
+    "createdAt": "2026-09-07T00:00:00.000Z"
   },
   {
-    id: 'starter-charles-eames',
-    text: 'The details are not the details. They make the design.',
-    source: 'Charles Eames',
-    tags: ['design'],
-    createdAt: '2026-01-01T00:00:01.000Z'
+    "id": "starter-humor-productivity",
+    "text": "I made a to-do list so my unfinished business could enjoy better formatting.",
+    "source": "Anonymous",
+    "tags": [
+      "humor",
+      "adulting"
+    ],
+    "createdAt": "2026-09-07T00:00:00.000Z"
   },
   {
-    id: 'starter-dijkstra',
-    text: 'Simplicity is prerequisite for reliability.',
-    source: 'Edsger W. Dijkstra',
-    tags: ['engineering'],
-    createdAt: '2026-01-01T00:00:02.000Z'
+    "id": "starter-humor-housework",
+    "text": "Housework is a subscription service where I am both the unpaid employee and the disappointed customer.",
+    "source": "Anonymous",
+    "tags": [
+      "humor",
+      "everyday-life"
+    ],
+    "createdAt": "2026-09-07T00:00:00.000Z"
   }
 ];
 
