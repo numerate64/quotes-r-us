@@ -121,3 +121,7 @@ For current pricing, check:
 | `PORT` | Container port, default `3000`. |
 | `DYNAMODB_TABLE` | Enables DynamoDB storage for the optional API. |
 | `QUOTE_STORE=local` | Forces file storage for the optional API. |
+
+## Admin
+
+Use **Admin** in the navigation to search and delete saved quotes or remove built-in samples from rotation. Each deletion requires confirmation and persists in this browser. Samples are excluded using browser storage; the bundled sample file and other visitors are unchanged. This is a local management page, not a password-protected global admin account.

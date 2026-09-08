@@ -80,3 +80,7 @@ textarea { resize: vertical; min-height: 150px; }
   .site-footer { justify-content: center; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+
+.item-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.item-actions .delete-quote { color: #a12e00; }
+nav { flex-wrap: wrap; }

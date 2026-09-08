@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Submit a Quote | Quotes-R-Us</title>
+    <title>Admin | Quotes-R-Us</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
@@ -18,34 +18,36 @@
         </a>
         <nav aria-label="Main navigation">
           <a href="index.html">Home</a>
+          <a href="submit.html">Submit</a>
           <a href="library.html">Library</a>
-          <a href="admin.html">Admin</a>
         </nav>
       </header>
 
-      <form id="quote-form" class="quote-form">
-        <p class="eyebrow">Add your two cents</p><h1>Submit a quote</h1><p class="page-description">An overheard gem. A favorite line. Something worth remembering.</p>
-        <label for="quote-text">Quote</label>
-        <textarea id="quote-text" name="quote" rows="6" maxlength="500" required placeholder="The quote goes here"></textarea>
-
-        <div class="form-grid">
-          <div>
-            <label for="quote-source">Author or source</label>
-            <input id="quote-source" name="source" maxlength="80" placeholder="Optional">
-          </div>
-          <div>
-            <label for="quote-tags">Tags</label>
-            <input id="quote-tags" name="tags" maxlength="80" placeholder="work, life, funny">
-          </div>
+      <section class="library-panel" id="admin-panel">
+        <div class="library-header">
+          <div><p class="eyebrow">Browser controls</p><h1>Admin</h1></div>
+          <input id="search-quotes" type="search" placeholder="Search quotes" aria-label="Search quotes">
         </div>
-
-        <div class="form-actions">
-          <button type="submit">Save quote</button>
-        </div>
+        <p class="page-description">Delete saved quotes or remove samples from rotation in this browser only. This does not change the shared site or anyone else’s collection.</p>
         <p id="form-status" class="status-note" role="status" aria-live="polite"></p>
-      </form>
+        <div id="quote-list" class="quote-list" role="list"></div>
+      </section>
       <footer class="site-footer">Good words. Yours to keep. <span>Saved in this browser.</span></footer>
     </main>
+
+    <template id="quote-item-template">
+      <article class="quote-item" role="listitem">
+        <p></p>
+        <div class="item-footer">
+          <span class="item-source"></span>
+          <span class="item-tags"></span>
+        </div>
+        <div class="item-actions">
+          <button class="show-quote" type="button">Show</button>
+          <button class="delete-quote" type="button">Delete</button>
+        </div>
+      </article>
+    </template>
 
     <script src="app.js"></script>
   </body>

@@ -1,5 +1,14 @@
 const STORAGE_KEY = 'quotes-r-us:v1';
 const ACTIVE_KEY = 'quotes-r-us:active';
+const DELETED_SAMPLES_KEY = 'quotes-r-us:deleted-samples';
+const isAdmin = Boolean(document.querySelector('#admin-panel'));
+let deletedSampleIds;
+try {
+  const ids = JSON.parse(localStorage.getItem(DELETED_SAMPLES_KEY) || '[]');
+  deletedSampleIds = new Set(Array.isArray(ids) ? ids.filter((id) => typeof id === 'string') : []);
+} catch {
+  deletedSampleIds = new Set();
+}
 
 let starterQuotes = [
   {
@@ -67,7 +76,7 @@ function saveLocalQuotes() {
 }
 
 function allDisplayQuotes() {
-  return [...quotes, ...starterQuotes];
+  return [...quotes, ...starterQuotes.filter((quote) => !deletedSampleIds.has(quote.id))];
 }
 
 function normalizeTags(value) {
@@ -121,7 +130,7 @@ function renderHome() {
   if (!els.currentQuote) return;
 
   const quote = findActiveQuote();
-  els.count.textContent = `${starterQuotes.length.toLocaleString()} samples · ${quotes.length} saved`;
+  els.count.textContent = `${starterQuotes.filter((quote) => !deletedSampleIds.has(quote.id)).length.toLocaleString()} samples · ${quotes.length} saved`;
   els.refresh.disabled = !quote;
 
   if (!quote) {
@@ -145,13 +154,14 @@ function renderLibrary() {
   if (!els.list) return;
 
   const term = els.search.value.trim().toLowerCase();
-  const shown = quotes.filter((quote) => quoteMatchesSearch(quote, term));
+  const collection = isAdmin ? allDisplayQuotes() : quotes;
+  const shown = collection.filter((quote) => quoteMatchesSearch(quote, term));
   els.list.textContent = '';
 
   if (!shown.length) {
     const empty = document.createElement('div');
     empty.className = 'empty';
-    empty.textContent = quotes.length ? 'No quotes match that search.' : 'No submitted quotes yet.';
+    empty.textContent = collection.length ? 'No quotes match that search.' : (isAdmin ? 'No quotes left in this browser’s rotation.' : 'No submitted quotes yet.');
     els.list.append(empty);
     return;
   }
@@ -168,6 +178,30 @@ function renderLibrary() {
         setActiveQuote(quote.id);
         window.location.href = 'index.html';
       });
+      const deleteButton = item.querySelector('.delete-quote');
+      if (deleteButton) {
+        const saved = quotes.some((entry) => entry.id === quote.id);
+        deleteButton.textContent = saved ? 'Delete saved quote' : 'Delete sample';
+        deleteButton.addEventListener('click', () => {
+          if (!window.confirm(`Delete this ${saved ? 'saved quote' : 'sample'} from this browser?\n\n${quote.text}`)) return;
+          try {
+            if (saved) {
+              const remaining = quotes.filter((entry) => entry.id !== quote.id);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(remaining));
+              quotes = remaining;
+            } else {
+              const remainingIds = new Set([...deletedSampleIds, quote.id]);
+              localStorage.setItem(DELETED_SAMPLES_KEY, JSON.stringify([...remainingIds]));
+              deletedSampleIds = remainingIds;
+            }
+            renderLibrary();
+            showStatus(saved ? 'Saved quote deleted from this browser.' : 'Sample removed from this browser’s rotation.');
+            els.search.focus();
+          } catch {
+            showStatus('Could not save the deletion. Check browser storage settings and try again.');
+          }
+        });
+      }
       els.list.append(item);
     });
 }
@@ -218,7 +252,7 @@ async function init() {
   renderHome();
   renderLibrary();
 
-  if (els.currentQuote) {
+  if (els.currentQuote || isAdmin) {
     try {
       const response = await fetch('sample-quotes.json');
       if (!response.ok) throw new Error('Sample quotes unavailable');
@@ -230,6 +264,7 @@ async function init() {
       }
       starterQuotes = samples;
       renderHome();
+      renderLibrary();
     } catch {
       // Keep the small built-in fallback and personal quotes usable.
     }
