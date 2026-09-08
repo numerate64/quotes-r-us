@@ -84,3 +84,7 @@ textarea { resize: vertical; min-height: 150px; }
 .item-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .item-actions .delete-quote { color: #a12e00; }
 nav { flex-wrap: wrap; }
+
+pre { padding: 18px; margin: 20px 0; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: .85rem; }
+.library-panel h2 { margin-top: 28px; font-size: 1.2rem; }
+.library-panel > p { line-height: 1.6; }

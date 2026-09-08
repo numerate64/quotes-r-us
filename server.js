@@ -1,4 +1,7 @@
 import express from 'express';
+import { readFileSync } from 'node:fs';
+import { randomInt } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { QuoteStore } from './src/quote-store.js';
 
 const app = express();
@@ -6,7 +9,28 @@ const port = Number(process.env.PORT || 3000);
 const store = new QuoteStore();
 
 app.use(express.json({ limit: '32kb' }));
-app.use(express.static('.', { extensions: ['html'] }));
+// Only publish the UI assets, never local data files or server source.
+const publicFiles = ['index.html', 'submit.html', 'library.html', 'admin.html',
+  'api.html', 'app.js', 'quote-api.js', 'api-demo.js', 'styles.css', 'sample-quotes.json'];
+app.get('/', (_req, res) => res.sendFile(fileURLToPath(new URL('index.html', import.meta.url))));
+for (const file of publicFiles) {
+  app.get(`/${file}`, (_req, res) => {
+    if (['sample-quotes.json', 'quote-api.js'].includes(file)) res.set('Access-Control-Allow-Origin', '*');
+    res.sendFile(fileURLToPath(new URL(file, import.meta.url)));
+  });
+}
+
+const publicQuotes = JSON.parse(readFileSync(new URL('sample-quotes.json', import.meta.url), 'utf8'));
+app.use('/api/v1', (_req, res, next) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+app.options('/api/v1/quotes/random', (_req, res) => res.sendStatus(204));
+app.get('/api/v1/quotes/random', (_req, res) => {
+  res.json({ quote: publicQuotes[randomInt(publicQuotes.length)] });
+});
 
 function normalizeTags(value) {
   if (Array.isArray(value)) {
@@ -82,6 +106,6 @@ app.use((error, _req, res, _next) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`Quotes-R-Us listening on port ${port}`);
+const server = app.listen(port, () => {
+  console.log(`Quotes-R-Us listening on port ${server.address().port}`);
 });

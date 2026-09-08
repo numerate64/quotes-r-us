@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API | Quotes-R-Us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="site-header">
+        <a class="brand-link" href="index.html" aria-label="Quotes-R-Us home">
+          <span class="logo-mark" aria-hidden="true">“</span>
+          <span>Quotes-R-Us</span>
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="index.html">Home</a>
+          <a href="submit.html">Submit</a>
+          <a href="library.html">Library</a>
+          <a href="admin.html">Admin</a>
+        </nav>
+      </header>
+
+      <section class="library-panel">
+        <p class="eyebrow">A little sarcasm to go</p><h1>Quote API</h1>
+        <p class="page-description">Use our 1,000 anonymous humor samples in your own site or app. No API key. Personal saved quotes and browser-only deletions are not shared.</p>
+        <h2>Get a random quote in JavaScript</h2>
+        <p>The helper downloads the public collection once and picks a quote in your app. GitHub Pages serves static files, not a server-side random endpoint.</p>
+        <pre><code>import { getRandomQuote } from
+  'https://numerate64.github.io/quotes-r-us/quote-api.js';
+
+const quote = await getRandomQuote();
+console.log(quote.text, quote.source);</code></pre>
+        <p>Use this inside a browser script with <code>type="module"</code>.</p>
+        <div class="form-actions"><button type="button" id="try-api">Try a request</button></div>
+        <pre id="api-output" role="status" aria-live="polite">Your response will appear here.</pre>
+        <h2>Download the collection</h2>
+        <p><a href="sample-quotes.json">Public JSON collection</a> — an array of quote objects.</p>
+        <pre><code>curl https://numerate64.github.io/quotes-r-us/sample-quotes.json</code></pre>
+        <h2>Server-side random endpoint</h2>
+        <p>The optional Express/AWS server supports <code>GET /api/v1/quotes/random</code>, returning <code>{ "quote": { ... } }</code>. Each request selects one public sample. Cross-origin reads are enabled. This endpoint is not hosted on GitHub Pages.</p>
+        <pre><code># After starting the Express server locally:
+curl http://localhost:3000/api/v1/quotes/random</code></pre>
+      </section>
+      <footer class="site-footer">Good words. Yours to keep. <span>Saved in this browser.</span></footer>
+    </main>
+
+    <script type="module" src="api-demo.js"></script>
+  </body>
+</html>

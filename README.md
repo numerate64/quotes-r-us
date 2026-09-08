@@ -42,6 +42,32 @@ npm install
 npm run dev
 ```
 
+## Public quote access
+
+[API documentation and live demo](https://numerate64.github.io/quotes-r-us/api.html).
+
+The GitHub Pages version provides a public [JSON collection](https://numerate64.github.io/quotes-r-us/sample-quotes.json) and a browser JavaScript helper:
+
+```js
+import { getRandomQuote } from 'https://numerate64.github.io/quotes-r-us/quote-api.js';
+const quote = await getRandomQuote();
+console.log(quote.text, quote.source);
+```
+
+Use a browser `type="module"` script. The helper downloads the collection once, then selects randomly on the client. It throws on failed requests and retries on the next call. No key is required. The JSON response is an array of objects with `id`, `text`, `source`, `tags`, and `createdAt`.
+
+For a **server-selected random quote per HTTP request**, start the Express server (`npm ci && npm start`) or deploy it using [the AWS guide](DEPLOY_AWS.md):
+
+```bash
+curl http://localhost:3000/api/v1/quotes/random
+```
+
+Response: `{ "quote": { "id": "...", "text": "...", "source": "Anonymous", "tags": ["humor"], "createdAt": "..." } }`.
+
+This read-only endpoint selects from the bundled 1,000 samples, requires no database or key, allows cross-origin GET requests, and disables response caching. It is **not live on GitHub Pages**; Pages is static hosting. No new AWS deployment was provisioned for this feature. For calls from HTTPS websites, deploy the backend behind HTTPS as well (the existing AWS template defaults to HTTP).
+
+Neither public interface exposes browser-saved quotes or applies browser-local Admin deletions. The older database API below is separate.
+
 ## Optional API
 
 ```text

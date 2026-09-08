@@ -7,7 +7,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY sample-quotes.json SAMPLE_QUOTES.md ./
-COPY app.js index.html library.html submit.html styles.css server.js ./
+COPY app.js index.html library.html submit.html admin.html api.html quote-api.js api-demo.js styles.css server.js ./
 COPY src ./src
 
 EXPOSE 3000

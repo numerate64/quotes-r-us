@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "QUOTE_STORE=local node --watch server.js",
-    "check": "node --check server.js && node --check src/quote-store.js && node --check app.js"
+    "check": "node --check server.js && node --check src/quote-store.js && node --check app.js && node --check quote-api.js && node --check api-demo.js",
+    "test": "node --test"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.738.0",
