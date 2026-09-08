@@ -1,6 +1,8 @@
 const STORAGE_KEY = 'quotes-r-us:v1';
 const ACTIVE_KEY = 'quotes-r-us:active';
 const DELETED_SAMPLES_KEY = 'quotes-r-us:deleted-samples';
+const SHOW_SAMPLES_KEY = 'quotes-r-us:show-samples';
+let showSamples = localStorage.getItem(SHOW_SAMPLES_KEY) !== 'false';
 const isAdmin = Boolean(document.querySelector('#admin-panel'));
 let deletedSampleIds;
 try {
@@ -44,6 +46,7 @@ let starterQuotes = [
 ];
 
 const els = {
+  sampleToggle: document.querySelector('#show-samples'),
   form: document.querySelector('#quote-form'),
   text: document.querySelector('#quote-text'),
   source: document.querySelector('#quote-source'),
@@ -75,8 +78,12 @@ function saveLocalQuotes() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(quotes));
 }
 
+function visibleSamples() {
+  return showSamples ? starterQuotes.filter((quote) => !deletedSampleIds.has(quote.id)) : [];
+}
+
 function allDisplayQuotes() {
-  return [...quotes, ...starterQuotes.filter((quote) => !deletedSampleIds.has(quote.id))];
+  return [...quotes, ...visibleSamples()];
 }
 
 function normalizeTags(value) {
@@ -130,11 +137,13 @@ function renderHome() {
   if (!els.currentQuote) return;
 
   const quote = findActiveQuote();
-  els.count.textContent = `${starterQuotes.filter((quote) => !deletedSampleIds.has(quote.id)).length.toLocaleString()} samples · ${quotes.length} saved`;
+  els.count.textContent = `${showSamples ? `${visibleSamples().length.toLocaleString()} samples` : 'Samples hidden'} · ${quotes.length} saved`;
   els.refresh.disabled = !quote;
 
   if (!quote) {
-    els.currentQuote.textContent = 'Submit your first quote to start the collection.';
+    els.currentQuote.textContent = showSamples
+      ? 'Submit your first quote to start the collection.'
+      : 'Samples are hidden. Submit a quote or turn samples back on in Admin.';
     els.currentSource.textContent = 'Quotes-R-Us';
     els.currentTags.textContent = '';
     return;
@@ -238,6 +247,32 @@ if (els.form) {
     }
   });
 }
+
+if (els.sampleToggle) {
+  els.sampleToggle.checked = showSamples;
+  els.sampleToggle.addEventListener('change', () => {
+    try {
+      localStorage.setItem(SHOW_SAMPLES_KEY, String(els.sampleToggle.checked));
+      showSamples = els.sampleToggle.checked;
+      renderLibrary();
+      showStatus(showSamples ? 'Sample quotes are now shown.' : 'Sample quotes are now hidden. Your saved quotes are unchanged.');
+    } catch {
+      els.sampleToggle.checked = showSamples;
+      showStatus('Could not save this preference. Check browser storage settings and try again.');
+    }
+  });
+}
+
+function syncSamplePreference() {
+  showSamples = localStorage.getItem(SHOW_SAMPLES_KEY) !== 'false';
+  if (els.sampleToggle) els.sampleToggle.checked = showSamples;
+  renderHome();
+  renderLibrary();
+}
+window.addEventListener('storage', (event) => {
+  if (event.key === SHOW_SAMPLES_KEY || event.key === null) syncSamplePreference();
+});
+window.addEventListener('pageshow', syncSamplePreference);
 
 if (els.refresh) {
   els.refresh.addEventListener('click', randomQuote);

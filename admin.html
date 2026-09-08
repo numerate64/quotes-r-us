@@ -30,6 +30,11 @@
           <input id="search-quotes" type="search" placeholder="Search quotes" aria-label="Search quotes">
         </div>
         <p class="page-description">Delete saved quotes or remove samples from rotation in this browser only. This does not change the shared site or anyone else’s collection.</p>
+        <label class="sample-toggle" for="show-samples">
+          <input id="show-samples" type="checkbox" role="switch" aria-describedby="sample-toggle-help" checked>
+          <span>Show sample quotes</span>
+        </label>
+        <p id="sample-toggle-help">Include samples on the homepage and in this list. Turning this off does not delete quotes. Applies only to this browser, not the public API.</p>
         <p id="form-status" class="status-note" role="status" aria-live="polite"></p>
         <div id="quote-list" class="quote-list" role="list"></div>
       </section>

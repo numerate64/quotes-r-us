@@ -151,3 +151,5 @@ For current pricing, check:
 ## Admin
 
 Use **Admin** in the navigation to search and delete saved quotes or remove built-in samples from rotation. Each deletion requires confirmation and persists in this browser. Samples are excluded using browser storage; the bundled sample file and other visitors are unchanged. This is a local management page, not a password-protected global admin account.
+
+The **Show sample quotes** switch in Admin includes or hides samples on the homepage and in the Admin list. It defaults to on and remembers your choice in this browser. Saved quotes and individually deleted samples are preserved; public API results are unaffected.
