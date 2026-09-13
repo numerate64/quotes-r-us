@@ -2,8 +2,6 @@ const STORAGE_KEY = 'quotes-r-us:v1';
 const ACTIVE_KEY = 'quotes-r-us:active';
 const DELETED_SAMPLES_KEY = 'quotes-r-us:deleted-samples';
 const SHOW_SAMPLES_KEY = 'quotes-r-us:show-samples';
-const THEME_KEY = 'quotes-r-us:theme';
-const THEMES = new Set(['original', 'pager', 'ipod']);
 let showSamples = localStorage.getItem(SHOW_SAMPLES_KEY) !== 'false';
 const isAdmin = Boolean(document.querySelector('#admin-panel'));
 let deletedSampleIds;
@@ -49,7 +47,6 @@ let starterQuotes = [
 
 const els = {
   sampleToggle: document.querySelector('#show-samples'),
-  themePicker: document.querySelector('#theme-picker'),
   form: document.querySelector('#quote-form'),
   text: document.querySelector('#quote-text'),
   source: document.querySelector('#quote-source'),
@@ -64,18 +61,6 @@ const els = {
   list: document.querySelector('#quote-list'),
   template: document.querySelector('#quote-item-template')
 };
-
-function getTheme() {
-  const theme = localStorage.getItem(THEME_KEY) || 'original';
-  return THEMES.has(theme) ? theme : 'original';
-}
-
-function applyTheme(theme = getTheme()) {
-  document.documentElement.dataset.theme = theme;
-  document.querySelectorAll('input[name="theme"]').forEach((input) => {
-    input.checked = input.value === theme;
-  });
-}
 
 let quotes = [];
 let activeQuoteId = localStorage.getItem(ACTIVE_KEY) || starterQuotes[0].id;
@@ -278,21 +263,6 @@ if (els.sampleToggle) {
   });
 }
 
-if (els.themePicker) {
-  applyTheme();
-  els.themePicker.addEventListener('change', (event) => {
-    const theme = event.target.value;
-    if (!THEMES.has(theme)) return;
-    try {
-      localStorage.setItem(THEME_KEY, theme);
-      applyTheme(theme);
-      showStatus(`${theme[0].toUpperCase()}${theme.slice(1)} theme selected.`);
-    } catch {
-      showStatus('Could not save this theme preference. Check browser storage settings and try again.');
-    }
-  });
-}
-
 function syncSamplePreference() {
   showSamples = localStorage.getItem(SHOW_SAMPLES_KEY) !== 'false';
   if (els.sampleToggle) els.sampleToggle.checked = showSamples;
@@ -301,7 +271,6 @@ function syncSamplePreference() {
 }
 window.addEventListener('storage', (event) => {
   if (event.key === SHOW_SAMPLES_KEY || event.key === null) syncSamplePreference();
-  if (event.key === THEME_KEY || event.key === null) applyTheme();
 });
 window.addEventListener('pageshow', syncSamplePreference);
 
@@ -314,7 +283,6 @@ if (els.search) {
 }
 
 async function init() {
-  applyTheme();
   quotes = loadLocalQuotes();
   renderHome();
   renderLibrary();
