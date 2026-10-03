@@ -37,7 +37,7 @@ function renderQuote(quote) {
   const index = quotes.findIndex((item) => item.id === quote.id) + 1;
   els.text.textContent = quote.text;
   els.source.textContent = `— ${quote.source}`;
-  els.number.textContent = `NO. ${String(index).padStart(3, '0')} / ${quotes.length}`;
+  els.number.textContent = `QUOTE NO. ${String(index).padStart(3, '0')}`;
   els.activeTag.textContent = activeTag === 'all' ? 'ALL QUOTES' : labelFor(activeTag).toUpperCase();
   els.tags.replaceChildren(...quote.tags.map((tag) => {
     const span = document.createElement('span');
@@ -59,7 +59,7 @@ function renderTags() {
     const button = document.createElement('button');
     button.className = 'tag-button';
     button.type = 'button';
-    button.textContent = tag === 'all' ? `All · ${quotes.length}` : labelFor(tag);
+    button.textContent = tag === 'all' ? 'All quotes' : labelFor(tag);
     button.dataset.tag = tag;
     button.setAttribute('aria-pressed', String(tag === activeTag));
     button.addEventListener('click', () => {
@@ -89,7 +89,7 @@ async function init() {
     const response = await fetch('sample-quotes.json');
     if (!response.ok) throw new Error('Quote collection unavailable');
     const data = await response.json();
-    if (!Array.isArray(data) || data.length !== 600) throw new Error('Quote collection is incomplete');
+    if (!Array.isArray(data) || !data.length) throw new Error('Quote collection is empty');
     quotes = data;
     renderTags();
     nextQuote();

@@ -1,12 +1,12 @@
 # Quotes-R-Us
 
-A minimal, browser-only collection of 600 humorous quotes. Pick a tag, draw a random quote, or copy one to share.
+A minimal, browser-only collection of humorous quotes designed to keep growing through community contributions. Pick a tag, draw a random quote, or copy one to share.
 
 **Live site:** https://numerate64.github.io/quotes-r-us/
 
 ## Features
 
-- Exactly 600 bundled quotes
+- A growing bundled quote collection
 - Random refresh without immediately repeating the current quote
 - Tag filters for work, technology, adulting, social life, and everyday life
 - Copy-to-clipboard action

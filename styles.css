@@ -55,36 +55,36 @@ footer {
 }
 .submit-link:hover { color: var(--ink); }
 
-main { padding: clamp(68px, 10vw, 108px) 0 72px; }
+main { padding: clamp(38px, 5vw, 58px) 0 72px; }
 .intro {
-  max-width: 720px;
+  max-width: 760px;
   margin-inline: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
   text-align: center;
 }
 .kicker {
   display: flex;
   align-items: center;
-  gap: 9px;
-  margin: 0 0 24px;
+  gap: 8px;
+  margin: 0;
   color: var(--muted);
-  font: 500 .68rem/1 "DM Mono", monospace;
+  font: 500 .62rem/1 "DM Mono", monospace;
   letter-spacing: .12em;
 }
 .status-dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
   background: var(--accent);
 }
 h1 {
   margin: 0;
-  font-size: clamp(3rem, 7vw, 5.3rem);
-  font-weight: 500;
-  line-height: .98;
-  letter-spacing: -.055em;
+  font-size: clamp(1.45rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -.035em;
 }
 h1 em {
   color: var(--accent);
@@ -92,19 +92,19 @@ h1 em {
   font-weight: 400;
 }
 .intro-copy {
-  max-width: 550px;
-  margin: 26px auto 0;
+  max-width: 620px;
+  margin: 0 auto;
   color: var(--muted);
-  font-size: 1rem;
-  line-height: 1.75;
+  font-size: .82rem;
+  line-height: 1.55;
 }
 
 .quote-section {
   max-width: 860px;
-  margin: clamp(68px, 9vw, 96px) auto 0;
+  margin: clamp(28px, 4vw, 40px) auto 0;
 }
 .filter-row {
-  margin-bottom: 18px;
+  margin-top: 34px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -282,11 +282,10 @@ footer p { margin: 0; }
   }
   .wordmark { grid-column: 1; justify-self: start; }
   .submit-link { grid-column: 2; }
-  main { padding-top: 54px; }
-  .kicker { margin-bottom: 20px; }
-  h1 { font-size: clamp(2.9rem, 14vw, 4.4rem); }
-  .intro-copy { margin-top: 22px; font-size: .93rem; }
-  .quote-section { margin-top: 58px; }
+  main { padding-top: 30px; }
+  h1 { font-size: 1.4rem; }
+  .intro-copy { font-size: .76rem; }
+  .quote-section { margin-top: 24px; }
   .tag-list {
     width: 100%;
     flex-wrap: nowrap;

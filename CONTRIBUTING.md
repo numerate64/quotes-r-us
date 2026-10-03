@@ -8,7 +8,7 @@ Pull requests are also welcome:
 2. Use the next available `q-NNN` ID.
 3. Keep `source` accurate; do not invent attribution.
 4. Reuse an existing tag where practical.
-5. Keep the collection at 600 entries unless the maintainers have agreed to increase it; replace a weaker entry when adding a new one.
+5. Add the new quote without removing an existing entry; the collection is intended to grow.
 6. Run `npm test` before opening the pull request.
 
 Quotes should be concise, suitable for a general audience, and either original, public domain, or used with permission.

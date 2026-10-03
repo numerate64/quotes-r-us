@@ -2,7 +2,7 @@
   "name": "quotes-r-us",
   "version": "1.0.0",
   "private": true,
-  "description": "A minimal collection of 600 humorous quotes.",
+  "description": "A minimal, growing collection of humorous quotes.",
   "type": "module",
   "scripts": {
     "dev": "npx --yes serve . -l 4173",
