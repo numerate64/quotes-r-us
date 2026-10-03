@@ -8,7 +8,7 @@ const els = {
   next: document.querySelector('#new-quote'),
   copy: document.querySelector('#copy-quote'),
   copyStatus: document.querySelector('#copy-status'),
-  openSubmit: document.querySelector('#open-submit'),
+  openSubmitButtons: document.querySelectorAll('[data-open-submit]'),
   closeSubmit: document.querySelector('#close-submit'),
   cancelSubmit: document.querySelector('#cancel-submit'),
   submitDialog: document.querySelector('#submit-dialog'),
@@ -144,7 +144,7 @@ async function init() {
 
 els.next.addEventListener('click', nextQuote);
 els.copy.addEventListener('click', copyCurrent);
-els.openSubmit.addEventListener('click', openSubmissionDialog);
+els.openSubmitButtons.forEach((button) => button.addEventListener('click', openSubmissionDialog));
 els.closeSubmit.addEventListener('click', closeSubmissionDialog);
 els.cancelSubmit.addEventListener('click', closeSubmissionDialog);
 els.submitDialog.addEventListener('click', (event) => {
@@ -171,5 +171,15 @@ document.addEventListener('keydown', (event) => {
     nextQuote();
   }
 });
+
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
 
 init();
