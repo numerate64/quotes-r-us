@@ -272,15 +272,20 @@ footer p { margin: 0; }
   h1 { font-size: 1rem; }
   .quote-section { margin-top: 16px; }
   .tag-list {
-    width: 100%;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 2px 1px 8px;
-    scrollbar-width: thin;
+    width: min(100%, 360px);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
-  .tag-button { flex: 0 0 auto; }
-  .quote-card { min-height: 340px; padding: 24px 22px; }
+  .tag-button {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 8px;
+  }
+  .quote-card {
+    min-height: 440px;
+    padding: 24px 22px;
+  }
   .card-topline { flex-wrap: wrap; }
   blockquote {
     margin: 34px auto;
