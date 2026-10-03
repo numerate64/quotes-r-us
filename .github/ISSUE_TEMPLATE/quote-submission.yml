@@ -1,0 +1,38 @@
+name: Submit a quote
+about: Suggest a humorous quote for the collection
+labels: [quote-submission]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping the collection grow. Please submit one quote per issue.
+  - type: textarea
+    id: quote
+    attributes:
+      label: Quote
+      description: Keep it concise, original or properly attributed, and suitable for a general audience.
+      placeholder: "My calendar and I are in a committed relationship. It keeps making plans without me."
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source or author
+      description: Use “Anonymous” only if no source is known.
+      placeholder: Anonymous
+    validations:
+      required: true
+  - type: input
+    id: tags
+    attributes:
+      label: Tags
+      description: Add one to three short, comma-separated tags.
+      placeholder: work, technology
+    validations:
+      required: true
+  - type: checkboxes
+    id: rights
+    attributes:
+      label: Submission check
+      options:
+        - label: I believe this quote may be shared in this open-source collection and have included attribution where known.
+          required: true

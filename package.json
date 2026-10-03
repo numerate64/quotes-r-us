@@ -1,20 +1,12 @@
 {
   "name": "quotes-r-us",
-  "version": "0.2.0",
-  "description": "Container-ready shared quote app for ECS Fargate and DynamoDB.",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A minimal collection of 600 humorous quotes.",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "QUOTE_STORE=local node --watch server.js",
-    "check": "node --check server.js && node --check src/quote-store.js && node --check app.js && node --check quote-api.js && node --check api-demo.js",
-    "test": "node --test"
-  },
-  "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.738.0",
-    "@aws-sdk/lib-dynamodb": "^3.738.0",
-    "express": "^4.21.2"
-  },
-  "engines": {
-    "node": ">=22"
+    "dev": "npx --yes serve . -l 4173",
+    "check": "node --check app.js && node tests/check.mjs",
+    "test": "npm run check"
   }
 }

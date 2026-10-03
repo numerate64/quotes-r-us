@@ -1,48 +1,66 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Quotes-R-Us</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <main class="home-shell">
-      <header class="site-header" aria-labelledby="site-title">
-        <a class="brand-link" href="index.html" aria-label="Quotes-R-Us home">
-          <span class="logo-mark" aria-hidden="true">“</span>
-          <span id="site-title">Quotes-R-Us</span>
-        </a>
-        <nav aria-label="Main navigation">
-          <a href="library.html">Library</a>
-          <a href="admin.html">Admin</a>
-          <a href="api.html">API</a>
-        </nav>
-      </header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Six hundred small jokes for long days. Pick a tag or draw another quote.">
+  <meta name="theme-color" content="#f4f3ef">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%23171717'/%3E%3Ctext x='32' y='49' text-anchor='middle' font-size='48' fill='%23ff5c35'%3E%E2%80%9D%3C/text%3E%3C/svg%3E">
+  <title>Quotes-R-Us — a small humor collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="./" aria-label="Quotes-R-Us home">QUOTES—R—US</a>
+    <a class="submit-link" href="https://github.com/numerate64/quotes-r-us/issues/new?template=quote-submission.yml" target="_blank" rel="noreferrer">Submit a quote <span aria-hidden="true">↗</span></a>
+  </header>
 
-      <section class="single-quote-view" aria-label="Random quote">
-        <div class="home-intro"><p class="eyebrow">A little perspective</p><h1>Words worth keeping.</h1></div>
-        <article class="featured-quote" aria-live="polite">
-          <div class="quote-tools">
-            <span id="quote-count">0 saved</span>
-<span class="quote-symbol" aria-hidden="true">“</span>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="kicker"><span class="status-dot" aria-hidden="true"></span> HUMOR, ON DEMAND</p>
+      <h1 id="page-title">A small pause<br>for a <em>good line.</em></h1>
+      <p class="intro-copy">Six hundred observations about work, technology, adulting, and the everyday absurd.</p>
+    </section>
+
+    <section class="quote-section" aria-label="Random quote generator">
+      <div class="filter-row">
+        <span class="filter-label">FILTER</span>
+        <div id="tag-list" class="tag-list" role="group" aria-label="Filter quotes by tag"></div>
+      </div>
+
+      <article class="quote-card" aria-live="polite" aria-atomic="true">
+        <div class="card-topline">
+          <span id="quote-number">NO. 001 / 600</span>
+          <span id="active-tag">ALL QUOTES</span>
+        </div>
+        <blockquote id="quote-text">Loading something mildly amusing…</blockquote>
+        <div class="card-footer">
+          <div>
+            <p id="quote-source" class="quote-source">— Anonymous</p>
+            <div id="quote-tags" class="quote-tags"></div>
           </div>
-          <blockquote id="current-quote">Loading a quote...</blockquote>
-          <div class="quote-meta">
-            <span id="current-source">Quotes-R-Us</span>
-            <span id="current-tags"></span>
-          </div>
-          <div class="refresh-row"><button id="refresh-quote" type="button"><span aria-hidden="true">↻</span> Refresh quote</button></div>
-        </article>
+          <span class="quote-mark" aria-hidden="true">”</span>
+        </div>
+      </article>
 
-        <a class="primary-link" href="submit.html"><span aria-hidden="true">＋</span> Submit a quote</a>
-      </section>
-      <footer class="site-footer">Good words. Yours to keep. <span>Saved in this browser.</span></footer>
-    </main>
+      <div class="actions">
+        <button id="new-quote" class="primary-button" type="button">
+          <span>Another one</span><span class="button-icon" aria-hidden="true">↻</span>
+        </button>
+        <button id="copy-quote" class="text-button" type="button">Copy quote</button>
+        <span id="copy-status" class="copy-status" role="status"></span>
+      </div>
+    </section>
+  </main>
 
-    <script src="app.js"></script>
-  </body>
+  <footer>
+    <p>600 quotes. Zero life advice.</p>
+    <p>Open source on <a href="https://github.com/numerate64/quotes-r-us">GitHub <span aria-hidden="true">↗</span></a></p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
 </html>
