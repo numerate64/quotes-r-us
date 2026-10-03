@@ -7,7 +7,15 @@ const els = {
   tagList: document.querySelector('#tag-list'),
   next: document.querySelector('#new-quote'),
   copy: document.querySelector('#copy-quote'),
-  copyStatus: document.querySelector('#copy-status')
+  copyStatus: document.querySelector('#copy-status'),
+  openSubmit: document.querySelector('#open-submit'),
+  closeSubmit: document.querySelector('#close-submit'),
+  cancelSubmit: document.querySelector('#cancel-submit'),
+  submitDialog: document.querySelector('#submit-dialog'),
+  submissionForm: document.querySelector('#submission-form'),
+  submissionQuote: document.querySelector('#submission-quote'),
+  submissionAuthor: document.querySelector('#submission-author'),
+  submissionTags: document.querySelector('#submission-tags')
 };
 
 let quotes = [];
@@ -84,6 +92,39 @@ async function copyCurrent() {
   window.setTimeout(() => { els.copyStatus.textContent = ''; }, 1800);
 }
 
+function buildIssueUrl({ quote, author, tags }) {
+  const titleText = quote.length > 60 ? `${quote.slice(0, 57).trim()}…` : quote;
+  const quotedText = quote.split('\n').map((line) => `> ${line}`).join('\n');
+  const body = [
+    '## Quote',
+    quotedText,
+    '',
+    '## Author',
+    author,
+    '',
+    '## Tags',
+    tags,
+    '',
+    '---',
+    'Submitted through Quotes-R-Us.'
+  ].join('\n');
+  const params = new URLSearchParams({
+    title: `Quote submission: ${titleText}`,
+    body,
+    labels: 'quote-submission'
+  });
+  return `https://github.com/numerate64/quotes-r-us/issues/new?${params}`;
+}
+
+function openSubmissionDialog() {
+  els.submitDialog.showModal();
+  window.setTimeout(() => els.submissionQuote.focus(), 0);
+}
+
+function closeSubmissionDialog() {
+  els.submitDialog.close();
+}
+
 async function init() {
   try {
     const response = await fetch('sample-quotes.json');
@@ -103,6 +144,27 @@ async function init() {
 
 els.next.addEventListener('click', nextQuote);
 els.copy.addEventListener('click', copyCurrent);
+els.openSubmit.addEventListener('click', openSubmissionDialog);
+els.closeSubmit.addEventListener('click', closeSubmissionDialog);
+els.cancelSubmit.addEventListener('click', closeSubmissionDialog);
+els.submitDialog.addEventListener('click', (event) => {
+  if (event.target === els.submitDialog) closeSubmissionDialog();
+});
+els.submissionForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const submission = {
+    quote: els.submissionQuote.value.trim(),
+    author: els.submissionAuthor.value.trim(),
+    tags: els.submissionTags.value.trim()
+  };
+  if (!submission.quote || !submission.author || !submission.tags) {
+    els.submissionForm.reportValidity();
+    return;
+  }
+  window.open(buildIssueUrl(submission), '_blank', 'noopener,noreferrer');
+  els.submissionForm.reset();
+  closeSubmissionDialog();
+});
 document.addEventListener('keydown', (event) => {
   if (event.code === 'Space' && !event.repeat && event.target === document.body) {
     event.preventDefault();

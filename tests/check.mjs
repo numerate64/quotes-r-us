@@ -18,5 +18,7 @@ for (const quote of quotes) {
 }
 assert.match(html, /id="new-quote"/);
 assert.match(html, /id="tag-list"/);
-assert.match(html, /quote-submission\.yml/);
+assert.match(html, /id="submission-quote"/);
+assert.match(html, /id="submission-author"/);
+assert.match(html, /id="submission-tags"/);
 console.log(`✓ ${quotes.length} unique, valid quotes and required UI hooks found`);
